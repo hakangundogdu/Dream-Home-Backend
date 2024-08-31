@@ -1,5 +1,22 @@
 import { Request, Response, NextFunction } from "express";
-import { supabase } from "../utils/supabase";
+import Listing, { IListing } from "../models/property";
+
+export const getFeatured = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const randomListings = await Listing.aggregate([
+      { $match: { status: "sale" } },
+      { $sample: { size: 12 } },
+    ]);
+    res.status(200).json(randomListings);
+  } catch (error) {
+    console.error("Error fetching listings:", error);
+    next(error);
+  }
+};
 
 export const getProperties = async (
   req: Request,
@@ -7,22 +24,20 @@ export const getProperties = async (
   next: NextFunction
 ) => {
   try {
-    const { county, status, sort } = req.params;
-
-    const { data, error } = await supabase
-      .from("listings")
-      .select("*")
-      .ilike("city", county)
-      .eq("status", status)
-      .order("price", { ascending: sort === "asc" });
-
-    res.status(200).json(data);
+    const { city, status } = req.params;
+    const { sort } = req.query;
+    const sortOrder = sort === "desc" ? -1 : 1;
+    const listings = await Listing.find({
+      city,
+      status,
+    }).sort({ price: sortOrder });
+    res.status(200).json(listings);
   } catch (error) {
     next(error);
   }
 };
 
-export const getProperty = async (
+/*export const getProperty = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -65,7 +80,7 @@ export const getFeatured = async (
   } catch (error) {
     next(error);
   }
-};
+}; */
 
 /* export const getSavedProperties = async (
   req: Request,
