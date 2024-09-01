@@ -1,11 +1,14 @@
 import express from "express";
-import { getProperties, getFeatured } from "../controllers/propertyController";
+import {
+  getProperties,
+  getFeatured,
+  getPropertyById,
+} from "../controllers/propertyController";
 
 const router = express.Router();
 
-/* router.get("/:county/:status/:sort", getProperties);
-router.get("/featured", getFeatured);
-router.get("/:id", getProperty); */
-router.get("/:city/:status", getProperties);
+router.get("/search", getProperties);
+router.get("/:id", getPropertyById);
 router.get("/", getFeatured);
+
 export default router;
