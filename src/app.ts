@@ -2,7 +2,7 @@ import express, { Express } from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import propertyRoutes from "./routes/propertyRoutes";
-//import authRoutes from "./routes/authRoutes";
+import userRoutes from "./routes/userRoutes"; // Import user routes
 import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use("/api/properties", propertyRoutes);
-// app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
 
 //Error handling middleware
 app.use(errorHandler);
