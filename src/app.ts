@@ -11,24 +11,7 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://dreamhome.casa",
-  "https://www.dreamhome.casa",
-];
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: false,
-  })
-);
+app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
