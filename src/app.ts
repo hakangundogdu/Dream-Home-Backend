@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import cors from "cors";
 import propertyRoutes from "./routes/propertyRoutes";
 import userRoutes from "./routes/userRoutes"; // Import user routes
 import { errorHandler } from "./middleware/errorHandler";
@@ -9,6 +10,28 @@ dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://dreamhome.casa",
+  "https://www.dreamhome.casa",
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin!) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
+
+app.use("/api/", (req, res) => {
+  res.json({ message: "CORS enabled!" });
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
