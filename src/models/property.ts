@@ -27,14 +27,30 @@ const ListingSchema: Schema = new Schema(
     livingRooms: { type: Number, required: true },
     city: { type: String, required: true },
     status: { type: String, required: true },
-    latitude: { type: Number, required: true },
-    longitude: { type: Number, required: true },
-    price: { type: Number, required: true },
+    latitude: {
+      type: Schema.Types.Decimal128,
+      required: true,
+      get: (v: mongoose.Types.Decimal128) => parseFloat(v.toString()),
+    },
+    longitude: {
+      type: Schema.Types.Decimal128,
+      required: true,
+      get: (v: mongoose.Types.Decimal128) => parseFloat(v.toString()),
+    },
+    price: {
+      type: Schema.Types.Decimal128,
+      required: true,
+      get: (v: mongoose.Types.Decimal128) => parseFloat(v.toString()),
+    },
     priceLabel: { type: String, required: true },
     title: { type: String, required: true },
     images: { type: [String], required: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: { getters: true },
+    toObject: { getters: true },
+  }
 );
 
 export default mongoose.model<IListing>("Listing", ListingSchema);
