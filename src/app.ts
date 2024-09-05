@@ -38,13 +38,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Routes
-app.use("/api/properties", propertyRoutes);
-app.use("/api/users", userRoutes);
-
 app.get("/test-cors", (req, res) => {
   res.json({ message: "CORS test successful" });
 });
+// Routes
+app.use("/api/properties", propertyRoutes);
+app.use("/api/users", userRoutes);
 
 //Error handling middleware
 app.use(errorHandler);
