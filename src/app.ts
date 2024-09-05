@@ -1,6 +1,5 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
-import cors from "cors";
 import mongoose from "mongoose";
 import propertyRoutes from "./routes/propertyRoutes";
 import userRoutes from "./routes/userRoutes"; // Import user routes
@@ -10,12 +9,6 @@ dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
-
-app.use(
-  cors({
-    origin: "https://www.dreamhome.casa",
-  })
-);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
