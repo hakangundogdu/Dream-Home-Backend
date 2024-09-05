@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express, { Express, Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -13,26 +13,27 @@ const port = process.env.PORT || 3000;
 
 const allowedOrigins = [
   "http://localhost:5173",
-  // 'https://dream-home-backend.vercel.app',
+  "https://dream-home-backend.vercel.app",
   // Add any other frontend URLs here
 ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
-        var msg =
-          "The CORS policy for this site does not allow access from the specified Origin.";
-        return callback(new Error(msg), false);
-      }
-      return callback(null, true);
-    },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: false,
-  })
-);
+// Custom middleware for CORS
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -40,6 +41,10 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 app.use("/api/properties", propertyRoutes);
 app.use("/api/users", userRoutes);
+
+app.get("/test-cors", (req, res) => {
+  res.json({ message: "CORS test successful" });
+});
 
 //Error handling middleware
 app.use(errorHandler);
